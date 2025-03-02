@@ -1,0 +1,34 @@
+{
+  "name": "retirement",
+  "version": "1.0.0",
+  "description": "Retirement Calculator and Planner",
+  "source": "src/index.html",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d dist",
+    "start": "parcel --open",
+    "build": "parcel build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rarmstro/retirement.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/rarmstro/retirement/issues"
+  },
+  "homepage": "https://rarmstro.github.io/retirement",
+  "dependencies": {
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "devDependencies": {
+    "@parcel/transformer-sass": "^2.13.3",
+    "gh-pages": "^6.3.0",
+    "parcel": "latest",
+    "process": "^0.11.10"
+  }
+}

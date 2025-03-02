@@ -1,0 +1,45 @@
+# Retirement Project Setup and Configuration Log
+
+## Date: 2023-10-25
+
+### Repository Initialization
+- Created a new repository named `retirement`
+- Initialized the repository with `git init`
+
+### Directory Structure
+- Created the following directories:
+  - `/home/rarmstro/git/retirement/docs`
+  - `/home/rarmstro/git/retirement/src`
+  - `/home/rarmstro/git/retirement/tests`
+
+### Configuration
+- Set up `.gitignore` to exclude unnecessary files:
+  ```
+  # Ignore node_modules
+  node_modules/
+  
+  # Ignore logs
+  *.log
+  
+  # Ignore temporary files
+  *.tmp
+  ```
+
+### Dependencies
+- Installed necessary dependencies:
+  - Example: `npm install express`
+
+### Setup React App using Parcel
+Following steps found here: 
+  https://www.freecodecamp.org/news/how-to-up-a-react-app-with-parcel/ 
+  https://parceljs.org/getting-started/webapp/
+
+
+Modified steps because parcel-bundler is deprecated
+  npm init -y
+  npm install --save-dev parcel
+  npm install react react-dom
+
+
+### Notes
+- Any additional notes or comments about the setup process.
