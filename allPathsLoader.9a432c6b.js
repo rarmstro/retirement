@@ -1,0 +1,2 @@
+var e=globalThis.parcelRequire94c2,r=e.register;r("4iHcV",function(r,t){Object.defineProperty(r.exports,"allPathsLoader",{get:()=>o,set:void 0,enumerable:!0,configurable:!0});var n=e("7WQrb"),o=function(r,t){return(0,n.__awaiter)(void 0,void 0,void 0,function(){return(0,n.__generator)(this,function(n){switch(n.label){case 0:return[4,e("jOGho")];case 1:return[2,(0,n.sent().getIconPaths)(r,t)]}})})}}),r("jOGho",function(r,t){var n=e("Gr8vk");r.exports=Promise.all([n("eweTt"),n("8rKq8"),n("fnqr9")]).then(()=>e("2PQIx"))});
+//# sourceMappingURL=allPathsLoader.9a432c6b.js.map

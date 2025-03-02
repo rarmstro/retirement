@@ -1,0 +1,2 @@
+function e(e,r,t,n){Object.defineProperty(e,r,{get:t,set:n,enumerable:!0,configurable:!0})}var r=globalThis.parcelRequire94c2;(0,r.register)("2PQIx",function(t,n){e(t.exports,"getIconPaths",()=>i),e(t.exports,"iconNameToPathsRecordKey",()=>p),e(t.exports,"IconSvgPaths16",()=>r("cU40q")),e(t.exports,"IconSvgPaths20",()=>r("1DRiv"));var a=r("2pnsO"),c=r("cU40q"),o=r("1DRiv"),s=r("jW1kO");function i(e,r){var t=(0,a.pascalCase)(e);return r===s.IconSize.STANDARD?c[t]:o[t]}function p(e){return(0,a.pascalCase)(e)}});
+//# sourceMappingURL=allPaths.9d05e3b8.js.map
