@@ -2,13 +2,13 @@
   "name": "retirement",
   "version": "1.0.0",
   "description": "Retirement Calculator and Planner",
-  "source": "src/index.html",
+  "source": "index.html",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "predeploy": "npm run build",
     "deploy": "gh-pages -d dist",
-    "start": "parcel --open",
-    "build": "parcel build"
+    "start": "parcel --dist-dir local --open",
+    "build": "parcel build --public-url ./"
   },
   "repository": {
     "type": "git",
