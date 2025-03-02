@@ -1,0 +1,1 @@
+{"mappings":"ACEA,iBAIA","sources":["index.aa7f5fb8.css","src/styles.scss"],"sourcesContent":["h1 {\n  color: #1662aa;\n}\n\n.bp5-navbar {\n  list-style: none;\n}\n/*# sourceMappingURL=index.aa7f5fb8.css.map */\n","\n\nh1 {\n  color: rgb(22, 98, 170);\n}\n\n.bp5-navbar {\n  list-style: none;\n}"],"names":[],"version":3,"file":"index.aa7f5fb8.css.map"}
