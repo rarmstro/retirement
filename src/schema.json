@@ -1,0 +1,9 @@
+{
+  "type": "object",
+  "properties": {
+    "startYear": { "type": "integer", "default": 2025 },
+    "lifeExpectancy": { "type": "integer", "default": 88 },
+    "age": { "type": "integer", "default": 65 }
+  },
+  "required": ["startYear", "lifeExpectancy", "age"]
+}

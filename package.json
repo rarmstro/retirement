@@ -23,7 +23,10 @@
   "homepage": "https://rarmstro.github.io/retirement",
   "dependencies": {
     "@blueprintjs/core": "^5.17.2",
+    "ajv": "^8.17.1",
+    "chart.js": "^4.4.8",
     "react": "^18.3.1",
+    "react-chartjs-2": "^5.3.0",
     "react-dom": "^18.3.1"
   },
   "devDependencies": {
