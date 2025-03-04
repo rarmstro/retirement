@@ -1,9 +1,72 @@
 {
+  "$defs": {
+    "Client": {
+      "type": "object",
+      "properties": {
+        "startYear": { "title": "Start Year", "type": "integer" },
+        "lifeExpectancy": {
+          "title": "Life Expectency",
+          "type": "integer",
+          "default": 88
+        },
+        "age": { "title": "Age", "type": "integer", "default": 65 }
+      },
+      "required": ["startYear", "lifeExpectancy", "age"]
+    },
+    "Investment": {
+      "type": "object",
+      "properties": {
+        "initialAmount": {
+          "type": "number",
+          "minimum": 0,
+          "title": "Initial Amount"
+        },
+        "annualContribution": {
+          "type": "number",
+          "minimum": 0,
+          "title": "Annual Contribution"
+        },
+        "startingAge": {
+          "type": "integer",
+          "minimum": 0,
+          "title": "Starting Age"
+        },
+        "endingAge": {
+          "type": "integer",
+          "minimum": 0,
+          "title": "Ending Age"
+        },
+        "indexingPercentage": {
+          "type": "number",
+          "minimum": 0,
+          "title": "Indexing Percentage"
+        }
+      },
+      "required": [
+        "initialAmount",
+        "annualContribution",
+        "startingAge",
+        "endingAge",
+        "indexingPercentage"
+      ]
+    }
+  },
   "type": "object",
   "properties": {
-    "startYear": { "type": "integer", "default": 2025 },
-    "lifeExpectancy": { "type": "integer", "default": 88 },
-    "age": { "type": "integer", "default": 65 }
+
+    "clients": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/Investment" },
+      "maxItems": 2
+    },
+    "investments": {
+        "type": "array",
+        "items": { "$ref": "#/$defs/Investment" }
+    },
+
+    "startYear": { "title": "Start Year", "type": "integer", "default": 2025 },
+    "lifeExpectancy": { "title": "Life Expectency", "type": "integer", "default": 88 },
+    "age": { "title": "Age", "type": "integer", "default": 65 }
   },
   "required": ["startYear", "lifeExpectancy", "age"]
 }
