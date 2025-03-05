@@ -1,17 +1,16 @@
 import React, { useState } from "react";
 import { Button, Collapse } from "@blueprintjs/core";
+import SchemaString from "./SchemaString";
 
 interface SchemaObjectProps {
-  title: string;
-  json: object;
   schema: object;
 }
 
-const create = ( schema : object, level : string) => {
+const create = ( schema : object) => {
   if (schema["type"] === 'object') {
-    return createObject(schema["properties"], level);
+    return ( <div><SchemaObject schema={schema}/></div>);
   } else if (schema["type"] === 'string') {
-    return ( <div> <Button>String</Button> </div>);
+    return ( <div><SchemaString schema={schema}/></div>);
   } else if (schema["type"] === 'number') {
     return ( <div> <Button>Number</Button> </div>);
   } else if (schema["type"] === 'integer') {
@@ -20,33 +19,25 @@ const create = ( schema : object, level : string) => {
     return ( <div> <Button>Boolean</Button> </div>);
   } else if (schema["type"] === 'enum') {
     return ( <div> <Button>Enum</Button> </div>);  
+  } else if (schema["type"] === 'array') {
+    return ( <div> <Button>Array</Button> </div>);  
   }
   
 }
-
-const createObject = (schema : object, level : string) => {
-
-  return ( 
-  <div>
-    {Object.keys(schema).map((key) => (
-      <div>
-        <SchemaObject title={key} json={schema[key]} schema={schema[key]} />
-      </div>
-    ))}
-    
-  </div>
-  );
-};
 
 const SchemaObject: React.FC<SchemaObjectProps> = (props) => {
 
   const [isOpen, setIsOpen] = useState(false);
 
   return (<div>
-    <Button onClick={() => setIsOpen(!isOpen)}>{isOpen ? "Hide" : "Show"} {props.title}</Button>
+    <Button onClick={() => setIsOpen(!isOpen)}>{isOpen ? "Hide" : "Show"} {props.schema["title"]}</Button>
       <Collapse isOpen={isOpen}> 
         <div style={{ width: '100%', margin: '10px 10px' }}>
-          {create(props.schema, '')}
+        {Object.keys(props.schema["properties"]).map((key) => (
+          <div id={key} key={key}>
+            { create(props.schema["properties"][key]) } 
+          </div>
+        ))}
         </div>
       </Collapse>
     </div>

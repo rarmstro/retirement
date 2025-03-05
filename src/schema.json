@@ -53,7 +53,6 @@
   },
   "type": "object",
   "properties": {
-
     "clients": {
       "type": "array",
       "items": { "$ref": "#/$defs/Investment" },
@@ -67,7 +66,22 @@
     "startYear": { "title": "Start Year", "type": "integer", "default": 2025 },
     "lifeExpectancy": { "title": "Life Expectency", "type": "integer", "default": 88 },
     "age": { "title": "Age", "type": "integer", "default": 65 },
-    "name": { "title": "Name", "type": "string", "default": "John Doe" }
+    "name": { "title": "Name", "type": "string", "default": "John Doe" },
+    "test_object": {
+      "title": "Test Object",
+      "type": "object",
+      "properties": {
+        "test_string": { "title": "Test String", "type": "string" },
+        "test_integer": { "title": "Test Integer", "type": "integer" }, 
+        "test_number": { "title": "Test Number", "type": "number" }, 
+        "test_boolean": { "title": "Test Boolean", "type": "boolean" },
+        "test_array": {
+          "title": "Test Array", 
+          "type": "array",
+          "items": { "title": "Test Item", "type": "string" }
+        }
+      }
+    }
   },
   "required": ["startYear", "lifeExpectancy", "age"]
 }

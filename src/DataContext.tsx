@@ -1,5 +1,4 @@
 import React, { createContext, useState, useContext, ReactNode } from 'react';
-import { validateData } from './validation';
 import schema from './schema.json';
 import Ajv from 'ajv';
 

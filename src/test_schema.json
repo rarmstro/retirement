@@ -1,0 +1,37 @@
+{
+  "title": "Test Settings",
+  "description": "Test settings for the application",
+  "type": "object",
+  "properties": {
+    "test_string": { "title": "Test String", "type": "string" },
+    "test_integer": { "title": "Test Integer", "type": "integer" }, 
+    "test_range_integer": { "title": "Test Range", "type": "integer", "minimum": 0, "maximum": 100 }, 
+    "test_number": { "title": "Test Number", "type": "number" }, 
+    "test_boolean": { "title": "Test Boolean", "type": "boolean" },
+    "test_array": {
+      "title": "Test Array", 
+      "type": "array",
+      "items": { "title": "Test Item", "type": "string" }
+    },
+    "test_enum": {
+      "title": "Test Enum",
+      "type": "string",
+      "enum": ["Option 1", "Option 2", "Option 3"]
+    },
+    "test_object": {
+      "title": "Test Object",
+      "type": "object",
+      "properties": {
+        "test_string": { "title": "Test String", "type": "string" },
+        "test_integer": { "title": "Test Integer", "type": "integer" }, 
+        "test_number": { "title": "Test Number", "type": "number" }, 
+        "test_boolean": { "title": "Test Boolean", "type": "boolean" },
+        "test_array": {
+          "title": "Test Array", 
+          "type": "array",
+          "items": { "title": "Test Item", "type": "string" }
+        }
+      }
+    }
+  }
+}
