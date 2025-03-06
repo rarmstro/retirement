@@ -14,7 +14,7 @@ const SchemaObject: React.FC<SchemaObjectProps> = ({ schema, fullSchema, data, u
   const resolvedSchema = resolveRef(schema, fullSchema);
 
   return (
-    <Card className="schema-object-card" style={{ marginBottom: "20px", padding: "15px" }}>
+    <div>
       <Button 
         onClick={() => setIsOpen(!isOpen)} 
         className="bp3-intent-primary" 
@@ -23,15 +23,16 @@ const SchemaObject: React.FC<SchemaObjectProps> = ({ schema, fullSchema, data, u
         {isOpen ? "Hide" : "Show"} {resolvedSchema["title"]}
       </Button>
       <Collapse isOpen={isOpen}>
-        <div style={{ padding: "10px 20px" }}>
+        <Card className="schema-object-card" style={{ marginBottom: "20px", padding: "15px" }}>
+        
           {Object.keys(resolvedSchema["properties"] || {}).map((key) => (
             <div id={key} key={key} style={{ marginBottom: "15px" }}>
               {renderSchemaType(resolvedSchema["properties"][key], fullSchema, data?.[key], updateJson, `${key}`)}
             </div>
           ))}
-        </div>
+        </Card>
       </Collapse>
-    </Card>
+    </div>
   );
 };
 
