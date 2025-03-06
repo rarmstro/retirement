@@ -11,3 +11,43 @@ h1 {
 #chart-holder {
   background-color: #e5edf3;
 }
+
+/* Styling for SchemaObject and SchemaArray cards */
+.schema-object-card, .schema-array-card {
+  border: 1px solid #dcdcdc;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.schema-array-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.bp3-intent-primary {
+  background-color: #007bff;
+  color: white;
+  border-color: #007bff;
+}
+
+.bp3-intent-success {
+  background-color: #28a745;
+  color: white;
+  border-color: #28a745;
+}
+
+.bp3-intent-danger {
+  background-color: #dc3545;
+  color: white;
+  border-color: #dc3545;
+}
+
+/* Hover effects */
+.bp3-button:hover {
+  background-color: #f0f0f0;
+}
+
+.schema-array-item button:hover {
+  background-color: rgba(0, 0, 0, 0.1);
+}

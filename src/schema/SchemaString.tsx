@@ -3,19 +3,18 @@ import { FormGroup, InputGroup } from "@blueprintjs/core";
 
 interface SchemaStringProps {
   schema: object;
+  data: any; // Receives current JSON data
+  updateJson: (path: string, value: any) => void; // Function to update JSON
+  path: string; // Path to this field in the JSON structure
 }
 
-const handleInputChange = (field: string, value: string) => {
-  console.log( parseInt(value, 10) );
-};
-
-const SchemaString: React.FC<SchemaStringProps> = (props) => {
+const SchemaString: React.FC<SchemaStringProps> = ({ schema, data, updateJson, path }) => {
   return (
     <div>
-      <FormGroup label={props.schema["title"]} >
+      <FormGroup label={schema["title"]}>
         <InputGroup
-          value={"foobar"}
-          onChange={(e) => handleInputChange("foobar", e.target.value)}
+          value={data || ""} // Use current data or empty string
+          onChange={(e) => updateJson(path, e.target.value)} // Update JSON on change
         />
       </FormGroup>
     </div>
@@ -23,4 +22,3 @@ const SchemaString: React.FC<SchemaStringProps> = (props) => {
 };
 
 export default SchemaString;
-

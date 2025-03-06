@@ -1,0 +1,81 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Test Schema",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "title": "Full Name"
+    },
+    "age": {
+      "type": "integer",
+      "title": "Age"
+    },
+    "isActive": {
+      "type": "boolean",
+      "title": "Is Active"
+    },
+    "role": {
+      "type": "string",
+      "title": "Role",
+      "enum": ["Admin", "User", "Guest"]
+    },   
+    "color": {
+      "type": "string",
+      "enum": ["Red", "Green", "Blue"],
+      "title": "Favorite Color"
+    },
+    "preferences": {
+      "$ref": "#/$defs/preferences"
+    },
+    "tags": {
+      "type": "array",
+      "title": "Tags",
+      "items": {
+        "type": "string"
+      }
+    },
+    "addresses": {
+      "type": "array",
+      "title": "Addresses",
+      "items": {
+        "$ref": "#/$defs/address"
+      }
+    }
+  },
+  "$defs": {
+    "preferences": {
+      "type": "object",
+      "title": "User Preferences",
+      "properties": {
+        "theme": {
+          "type": "string",
+          "title": "Theme",
+          "enum": ["Light", "Dark"]
+        },
+        "notifications": {
+          "type": "boolean",
+          "title": "Enable Notifications"
+        }
+      }
+    },
+    "address": {
+      "type": "object",
+      "title": "Address",
+      "properties": {
+        "street": {
+          "type": "string",
+          "title": "Street"
+        },
+        "city": {
+          "type": "string",
+          "title": "City"
+        },
+        "postalCode": {
+          "type": "string",
+          "title": "Postal Code"
+        }
+      }
+    }
+  }
+}

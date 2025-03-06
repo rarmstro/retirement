@@ -1,46 +1,37 @@
 import React, { useState } from "react";
-import { Button, Collapse } from "@blueprintjs/core";
-import SchemaString from "./SchemaString";
+import { Button, Collapse, Card } from "@blueprintjs/core";
+import { renderSchemaType, resolveRef } from "./SchemaUtils"; // Import from SchemaUtils
 
 interface SchemaObjectProps {
-  schema: object;
+  schema: Record<string, any>;
+  fullSchema: Record<string, any>;
+  data: Record<string, any>;
+  updateJson: (path: string, value: any) => void;
 }
 
-const create = ( schema : object) => {
-  if (schema["type"] === 'object') {
-    return ( <div><SchemaObject schema={schema}/></div>);
-  } else if (schema["type"] === 'string') {
-    return ( <div><SchemaString schema={schema}/></div>);
-  } else if (schema["type"] === 'number') {
-    return ( <div> <Button>Number</Button> </div>);
-  } else if (schema["type"] === 'integer') {
-    return ( <div> <Button>Integer</Button> </div>);
-  } else if (schema["type"] === 'boolean') {
-    return ( <div> <Button>Boolean</Button> </div>);
-  } else if (schema["type"] === 'enum') {
-    return ( <div> <Button>Enum</Button> </div>);  
-  } else if (schema["type"] === 'array') {
-    return ( <div> <Button>Array</Button> </div>);  
-  }
-  
-}
-
-const SchemaObject: React.FC<SchemaObjectProps> = (props) => {
-
+const SchemaObject: React.FC<SchemaObjectProps> = ({ schema, fullSchema, data, updateJson }) => {
   const [isOpen, setIsOpen] = useState(false);
+  const resolvedSchema = resolveRef(schema, fullSchema);
 
-  return (<div>
-    <Button onClick={() => setIsOpen(!isOpen)}>{isOpen ? "Hide" : "Show"} {props.schema["title"]}</Button>
-      <Collapse isOpen={isOpen}> 
-        <div style={{ width: '100%', margin: '10px 10px' }}>
-        {Object.keys(props.schema["properties"]).map((key) => (
-          <div id={key} key={key}>
-            { create(props.schema["properties"][key]) } 
-          </div>
-        ))}
+  return (
+    <Card className="schema-object-card" style={{ marginBottom: "20px", padding: "15px" }}>
+      <Button 
+        onClick={() => setIsOpen(!isOpen)} 
+        className="bp3-intent-primary" 
+        style={{ marginBottom: "10px", display: "block", width: "100%" }}
+      >
+        {isOpen ? "Hide" : "Show"} {resolvedSchema["title"]}
+      </Button>
+      <Collapse isOpen={isOpen}>
+        <div style={{ padding: "10px 20px" }}>
+          {Object.keys(resolvedSchema["properties"] || {}).map((key) => (
+            <div id={key} key={key} style={{ marginBottom: "15px" }}>
+              {renderSchemaType(resolvedSchema["properties"][key], fullSchema, data?.[key], updateJson, `${key}`)}
+            </div>
+          ))}
         </div>
       </Collapse>
-    </div>
+    </Card>
   );
 };
 

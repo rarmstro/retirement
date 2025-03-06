@@ -2,7 +2,8 @@ import React, { useRef, useState } from "react";
 import { Navbar, NavbarGroup, NavbarHeading, NavbarDivider, Button } from "@blueprintjs/core";
 import StackedBarChart from "./Chart"; // Import the Chart component
 import { DataProvider, useData } from "./DataContext"; // Import the DataContext
-import schema from './test_schema.json';
+import schema from '../test/testSchema.json';
+import settings from '../test/testData.json'
 import JSONEditor from "./schema/JSONEdtor";
 
 const App: React.FC = () => {
