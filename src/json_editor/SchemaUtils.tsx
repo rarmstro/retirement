@@ -1,5 +1,6 @@
 import React from "react";
 import SchemaObject from "./SchemaObject";
+import SchemaBoolean from "./SchemaBoolean";
 
 const resolveRef = (ref: string, schema: Record<string, any>) => {
   const refPath = ref.slice(2).split("/");
@@ -19,7 +20,7 @@ export const resolveSchema = (
   schema: Record<string, any>,
   path: string
 ) => {
-  console.log("Path = ", path, schema);
+  //console.log("Path = ", path, schema);
   let currentSchema = schema;
 
   // Split the path into an array of keys
@@ -30,40 +31,40 @@ export const resolveSchema = (
 
 
   while (pathKeys.length > 1) { 
-    console.log("Current key = ", key);
+    //console.log("Current key = ", key);
 
-    console.log(pathKeys);
+    //console.log(pathKeys);
     
     // Extract everything before the first "[" character, or the entire string if there is no "["
     key = pathKeys[1].split("[")[0];
 
-    console.log("Child key = ", key);
+    //console.log("Child key = ", key);
 
     while (currentSchema["type"] === "array" && currentSchema["items"]) {
-      console.log("Handling array type");
+      //console.log("Handling array type");
       currentSchema = currentSchema["items"];
 
       // Check if there is a $ref at the current level of the schema
       if (currentSchema["$ref"]) {
-        console.log("Resolving $ref");
+        //console.log("Resolving $ref");
         currentSchema = resolveRef(currentSchema["$ref"], schema);
       }
     }
 
     if (currentSchema["type"] === "object" && currentSchema["properties"] && currentSchema["properties"][key]) {
       currentSchema = currentSchema["properties"][key];
-      console.log("Handling object type");
+      //console.log("Handling object type");
     } 
 
     // Check if there is a $ref at the current level of the schema
     while (currentSchema["$ref"]) {
-      console.log("Resolving $ref");
+      //console.log("Resolving $ref");
       currentSchema = resolveRef(currentSchema["$ref"], schema);
     }
 
     pathKeys.shift();
   }
-  console.log(currentSchema);
+  //console.log(currentSchema);
   return currentSchema;
 };
 
@@ -81,7 +82,25 @@ export const renderSchemaType = (
   switch (resolvedSchema["type"]) {
     case "object":
       return <SchemaObject schema={schema} json={json} path={path} updateJson={updateJson} />;
+    case "boolean":
+      return <SchemaBoolean schema={schema} json={json} path={path} updateJson={updateJson} />;
     default:
       return <div>Path= {path}</div>;
   }
 };
+
+// Find value in JSON object based on path
+export const findJSONValue = (json: Record<string, any>, path: string) => {
+    // Navigate through the object using the path
+    const keys = path.split(".");
+    let temp: any = json;
+  
+    for (let i = 1; i < keys.length - 1; i++) {
+      if (!(keys[i] in temp)) {
+        temp[keys[i]] = {}; // Ensure the path exists
+      }
+      temp = temp[keys[i]];
+    }
+
+    return { object : temp, key : keys[keys.length - 1], value : temp[keys[keys.length - 1]] } ;
+  }
