@@ -1,6 +1,7 @@
 import React from "react";
 import SchemaObject from "./SchemaObject";
 import SchemaBoolean from "./SchemaBoolean";
+import SchemaString from "./SchemaString";
 
 const resolveRef = (ref: string, schema: Record<string, any>) => {
   const refPath = ref.slice(2).split("/");
@@ -82,6 +83,15 @@ export const renderSchemaType = (
     case "object":
       return (
         <SchemaObject
+          schema={schema}
+          path={path}
+          getJson={getJson}
+          updateJson={updateJson}
+        />
+      );
+    case "string":
+      return (
+        <SchemaString
           schema={schema}
           path={path}
           getJson={getJson}
