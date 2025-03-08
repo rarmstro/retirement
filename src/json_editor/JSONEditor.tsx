@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { findJSONValue, renderSchemaType } from "./SchemaUtils";
 
 interface JSONEditorProps {
-  json: object; 
+  json: object;
   schema: object;
 }
 
@@ -14,7 +14,7 @@ const JSONEditor: React.FC<JSONEditorProps> = (props) => {
     setData((prevData) => {
       // Create a deep copy of prevData
       const newData = JSON.parse(JSON.stringify(prevData));
-      
+
       let result = findJSONValue(newData, path);
       result.object[result.key] = value;
 
@@ -23,7 +23,11 @@ const JSONEditor: React.FC<JSONEditorProps> = (props) => {
     });
   };
 
-  return ( renderSchemaType(props.schema, props.json, "$", updateJson) );
+  const getJson = () => {
+    return data;
+  };
+
+  return renderSchemaType(props.schema, "$", getJson, updateJson);
 };
 
 export default JSONEditor;
