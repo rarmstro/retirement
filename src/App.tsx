@@ -3,8 +3,7 @@ import { Navbar, NavbarGroup, NavbarHeading, NavbarDivider, Button } from "@blue
 import StackedBarChart from "./Chart"; // Import the Chart component
 import { DataProvider, useData } from "./DataContext"; // Import the DataContext
 import schema from '../test/testSchema.json';
-import settings from '../test/testData.json'
-import JSONEditor from "./schema/JSONEdtor";
+import JSONEditor from "./json_editor/JSONEditor";
 
 const App: React.FC = () => {
   return (
