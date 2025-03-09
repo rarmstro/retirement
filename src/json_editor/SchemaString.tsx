@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { InputGroup, FormGroup, Button, Popover, Menu, MenuItem } from "@blueprintjs/core";
-import { findJSONValue, resolveSchema } from "./SchemaUtils";
+import { findJSONValue, resolveSchema, existsJSONValue } from "./SchemaUtils";
 
 interface SchemaStringProps {
   schema: object;
@@ -15,9 +15,33 @@ const SchemaString: React.FC<SchemaStringProps> = ({
   getJson,
   updateJson,
 }) => {
+
   const json = getJson();
 
   const resolvedSchema = resolveSchema(schema, path);
+
+  const handleAdd = () => {
+    let initialData = resolvedSchema["default"] || "";
+    if (resolvedSchema["enum"]) {
+      initialData = initialData || resolvedSchema["enum"][0];
+    }
+
+    updateJson(path, initialData);
+  };
+
+  // Return component that is simply the title and a plus button if the JSON at this level is empty
+  if (!existsJSONValue(json, path)) {
+    return (
+        <Button
+          icon="add"
+          onClick={handleAdd}
+          style={{ marginBottom: "15px" }}
+          className="bp3-intent-success"
+        >{resolvedSchema["title"] || "Add" }</Button>
+    );
+  }
+
+
   const element = findJSONValue(json, path);
   let initialData = element.object[element.key] || resolvedSchema["default"] || ""
   if (resolvedSchema["enum"]) {

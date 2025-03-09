@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Button, Collapse, Card } from "@blueprintjs/core";
 import { resolveSchema, renderSchemaType } from "./SchemaUtils";
+import { existsJSONValue } from "./SchemaUtils";
 
 interface SchemaObjectProps {
   schema: object;
@@ -15,9 +16,30 @@ const SchemaObject: React.FC<SchemaObjectProps> = ({
   path,
   updateJson,
 }) => {
+
+  const handleAdd = () => {
+    updateJson(path, {});
+    setIsOpen(true);
+  };
+
   const [isOpen, setIsOpen] = useState(false);
 
+  const json = getJson();
+
   const resolvedSchema = resolveSchema(schema, path);
+
+
+  // Return component that is simply the title and a plus button if the JSON at this level is empty
+  if (!existsJSONValue(json, path)) {
+    return (
+        <Button
+          icon="add"
+          onClick={handleAdd}
+          style={{ marginBottom: "15px" }}
+          className="bp3-intent-success"
+        >{resolvedSchema["title"] || "Add" }</Button>
+    );
+  }
 
   return (
     <div>

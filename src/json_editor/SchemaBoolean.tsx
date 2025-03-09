@@ -25,7 +25,7 @@ const SchemaBoolean: React.FC<SchemaBooleanProps> = ({
 
   return (
     <div>
-      <FormGroup label={resolvedSchema["title"]} labelFor={path}>
+      <FormGroup labelFor={path}>
         <Checkbox
           checked={isChecked}
           onChange={(e) => {

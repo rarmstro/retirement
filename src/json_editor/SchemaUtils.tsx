@@ -131,3 +131,18 @@ export const findJSONValue = (json: Record<string, any>, path: string) => {
     value: temp[keys[keys.length - 1]],
   };
 };
+
+export const existsJSONValue = (json: Record<string, any>, path: string) => {
+  // Navigate through the object using the path
+  const keys = path.split(".");
+  let temp: any = json;
+
+  for (let i = 1; i < keys.length; i++) {
+    if (!(keys[i] in temp)) {
+      return false;
+    }
+    temp = temp[keys[i]];
+  }
+
+  return true;
+}
