@@ -35,7 +35,7 @@ const SchemaObject: React.FC<SchemaObjectProps> = ({
         <Button
           icon="add"
           onClick={handleAdd}
-          style={{ marginBottom: "15px" }}
+          style={{ margin: "2px" }}
           className="bp3-intent-success"
         >{resolvedSchema["title"] || "Add" }</Button>
     );

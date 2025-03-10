@@ -2,8 +2,10 @@ import React from "react";
 import SchemaObject from "./SchemaObject";
 import SchemaBoolean from "./SchemaBoolean";
 import SchemaString from "./SchemaString";
+import SchemaArray from "./SchemaArray";
+import SchemaNumber from "./SchemaNumber";
 
-const resolveRef = (ref: string, schema: Record<string, any>) => {
+export const resolveRef = (ref: string, schema: Record<string, any>) => {
   const refPath = ref.slice(2).split("/");
   let resolvedRef = schema;
   for (const key of refPath) {
@@ -37,7 +39,7 @@ export const resolveSchema = (schema: Record<string, any>, path: string) => {
     //console.log("Child key = ", key);
 
     while (currentSchema["type"] === "array" && currentSchema["items"]) {
-      //console.log("Handling array type");
+      console.log("Handling array type");
       currentSchema = currentSchema["items"];
 
       // Check if there is a $ref at the current level of the schema
@@ -98,6 +100,15 @@ export const renderSchemaType = (
           updateJson={updateJson}
         />
       );
+    case "array":
+      return (
+        <SchemaArray
+        schema={schema}
+        path={path}
+        getJson={getJson}
+        updateJson={updateJson}
+      />
+      );
     case "boolean":
       return (
         <SchemaBoolean
@@ -107,22 +118,66 @@ export const renderSchemaType = (
           updateJson={updateJson}
         />
       );
+      case "number":
+        return (
+          <SchemaNumber
+            schema={schema}
+            path={path}
+            getJson={getJson}
+            updateJson={updateJson}
+          />
+        );
     default:
       return <div>Path= {path}</div>;
   }
 };
 
 // Find value in JSON object based on path
-export const findJSONValue = (json: Record<string, any>, path: string) => {
+export const findJSONValue = (json: Record<string, any>, path: string, initialValue?: any) => {
   // Navigate through the object using the path
   const keys = path.split(".");
   let temp: any = json;
 
   for (let i = 1; i < keys.length - 1; i++) {
-    if (!(keys[i] in temp)) {
-      temp[keys[i]] = {}; // Ensure the path exists
+    // Check if the key represents an array with index.
+    // If so, extract the key without the index, check if the array exists and check if the array conatins the index
+    // If the array does not exist, create the array.
+    // If the array does not contain the index, create all of the indices up to the index and set the value to an empty object
+    //console.log("Checking key ", keys[i]);
+
+    if (keys[i].includes("[")) {
+      //console.log("Key with array value found!", keys[i])
+      const key = keys[i].split("[")[0];
+      const index = parseInt(keys[i].split("[")[1].replace("]", ""));
+      if (!(key in temp)) {
+        temp[key] = [];
+      }
+      if (!Array.isArray(temp[key])) {
+        throw new Error(`Invalid path: ${path}`);
+      }
+      if (index >= temp[key].length) {
+        for (let j = temp[key].length; j <= index; j++) {
+          temp[key].push({});
+        }
+      }
+      temp = temp[key][index];
+    } else {
+      if (!(keys[i] in temp)) {
+        temp[keys[i]] = {};
+      }
+      temp = temp[keys[i]];
     }
-    temp = temp[keys[i]];
+  }
+
+  if (keys[keys.length - 1].includes("[")) {
+    const key = keys[keys.length - 1].split("[")[0];
+    const index = parseInt(keys[keys.length - 1].split("[")[1].replace("]", ""));
+    console.log(temp, key, temp[key][index])
+    return {
+      object: temp[key],
+      key: index,
+      value: temp[key][index]
+    }
   }
 
   return {
@@ -138,11 +193,36 @@ export const existsJSONValue = (json: Record<string, any>, path: string) => {
   let temp: any = json;
 
   for (let i = 1; i < keys.length; i++) {
-    if (!(keys[i] in temp)) {
-      return false;
+    //console.log("Checking key = ", keys[i], "in path " , path);
+
+    // Check if the key represents an array with index.
+    // If so, extract the key without the index, check if the array exists and check if the array contains the index
+    if (keys[i].includes("[")) {
+      const key = keys[i].split("[")[0];
+      const index = parseInt(keys[i].split("[")[1].replace("]", ""));
+      if (!(key in temp)) {
+        return false;
+      }
+      if (!Array.isArray(temp[key])) {
+        return false;
+      }
+      if (index >= temp[key].length) {
+        return false;
+      }
+      temp = temp[key][index];
+    } else {
+      //console.log("Item = " , temp);
+      if (!temp) {
+        return false;
+      }
+
+      if (!(keys[i] in temp)) {
+        return false;
+      }
+      temp = temp[keys[i]];
     }
-    temp = temp[keys[i]];
   }
 
+  //console.log("Found!")
   return true;
 }

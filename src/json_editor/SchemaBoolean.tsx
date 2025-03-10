@@ -18,7 +18,7 @@ const SchemaBoolean: React.FC<SchemaBooleanProps> = ({
   const json = getJson();
 
   const resolvedSchema = resolveSchema(schema, path);
-  const element = findJSONValue(json, path);
+  const element = findJSONValue(json, path, false);
   const [isChecked, setChecked] = useState(
     element.object[element.key] || false
   );

@@ -35,14 +35,14 @@ const SchemaString: React.FC<SchemaStringProps> = ({
         <Button
           icon="add"
           onClick={handleAdd}
-          style={{ marginBottom: "15px" }}
+          style={{ margin: "2px" }}
           className="bp3-intent-success"
         >{resolvedSchema["title"] || "Add" }</Button>
     );
   }
 
 
-  const element = findJSONValue(json, path);
+  const element = findJSONValue(json, path, "foobar");
   let initialData = element.object[element.key] || resolvedSchema["default"] || ""
   if (resolvedSchema["enum"]) {
     initialData = initialData || resolvedSchema["enum"][0];
