@@ -119,6 +119,7 @@ export const renderSchemaType = (
         />
       );
       case "number":
+      case "integer":
         return (
           <SchemaNumber
             schema={schema}

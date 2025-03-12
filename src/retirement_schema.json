@@ -1,11 +1,13 @@
 {
   "$defs": {
     "Client": {
+      "title": "Client",
       "type": "object",
       "properties": {
+        "name": { "title": "Name", "type": "string", "default": "John Doe" },
         "startYear": { "title": "Start Year", "type": "integer" },
         "lifeExpectancy": {
-          "title": "Life Expectency",
+          "title": "Life Expectancy",
           "type": "integer",
           "default": 88
         },
@@ -14,32 +16,33 @@
       "required": ["startYear", "lifeExpectancy", "age"]
     },
     "Investment": {
+      "title": "Investment",
       "type": "object",
       "properties": {
         "initialAmount": {
+          "title": "Initial Amount",
           "type": "number",
-          "minimum": 0,
-          "title": "Initial Amount"
+          "minimum": 0
         },
         "annualContribution": {
+          "title": "Annual Contribution",
           "type": "number",
-          "minimum": 0,
-          "title": "Annual Contribution"
+          "minimum": 0
         },
         "startingAge": {
+          "title": "Starting Age",
           "type": "integer",
-          "minimum": 0,
-          "title": "Starting Age"
+          "minimum": 0
         },
         "endingAge": {
+          "title": "Ending Age",
           "type": "integer",
-          "minimum": 0,
-          "title": "Ending Age"
+          "minimum": 0
         },
         "indexingPercentage": {
+          "title": "Indexing Percentage",
           "type": "number",
-          "minimum": 0,
-          "title": "Indexing Percentage"
+          "minimum": 0
         }
       },
       "required": [
@@ -51,32 +54,31 @@
       ]
     }
   },
+  "title": "Retirement Settings",
   "type": "object",
   "properties": {
     "clients": {
+      "title": "Clients",
       "type": "array",
-      "items": { "$ref": "#/$defs/Investment" },
+      "items": { "$ref": "#/$defs/Client" },
       "maxItems": 2
     },
     "investments": {
-        "type": "array",
-        "items": { "$ref": "#/$defs/Investment" }
+      "title": "Investments",
+      "type": "array",
+      "items": { "$ref": "#/$defs/Investment" }
     },
-
     "startYear": { "title": "Start Year", "type": "integer", "default": 2025 },
-    "lifeExpectancy": { "title": "Life Expectency", "type": "integer", "default": 88 },
-    "age": { "title": "Age", "type": "integer", "default": 65 },
-    "name": { "title": "Name", "type": "string", "default": "John Doe" },
     "test_object": {
       "title": "Test Object",
       "type": "object",
       "properties": {
         "test_string": { "title": "Test String", "type": "string" },
-        "test_integer": { "title": "Test Integer", "type": "integer" }, 
-        "test_number": { "title": "Test Number", "type": "number" }, 
+        "test_integer": { "title": "Test Integer", "type": "integer" },
+        "test_number": { "title": "Test Number", "type": "number" },
         "test_boolean": { "title": "Test Boolean", "type": "boolean" },
         "test_array": {
-          "title": "Test Array", 
+          "title": "Test Array",
           "type": "array",
           "items": { "title": "Test Item", "type": "string" }
         }

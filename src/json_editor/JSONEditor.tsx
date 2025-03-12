@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import { findJSONValue, renderSchemaType } from "./SchemaUtils";
+import { useData } from "../DataContext"; // Import the DataContext
+import { TextArea } from "@blueprintjs/core"; // Import BlueprintJS TextArea
 
 interface JSONEditorProps {
   json: object;
@@ -7,7 +9,7 @@ interface JSONEditorProps {
 }
 
 const JSONEditor: React.FC<JSONEditorProps> = (props) => {
-  const [data, setData] = useState(props.json);
+  const { data, setData, schema } = useData();
 
   const updateJson = (path: string, value: any) => {
     //console.log("Path = ", path, "Value = ", value);
@@ -27,7 +29,29 @@ const JSONEditor: React.FC<JSONEditorProps> = (props) => {
     return data;
   };
 
-  return renderSchemaType(props.schema, "$", getJson, updateJson);
+  return (
+    <div>
+      <div style={{ display: "flex", gap: "20px", marginBottom: "20px" }}>
+        <div style={{ flex: 1 }}>
+          <h4>Schema:</h4>
+          <TextArea
+            readOnly
+            value={JSON.stringify(schema, null, 2)}
+            style={{ width: "100%", height: "200px" }}
+          />
+        </div>
+        <div style={{ flex: 1 }}>
+          <h4>Data:</h4>
+          <TextArea
+            readOnly
+            value={JSON.stringify(data, null, 2)}
+            style={{ width: "100%", height: "200px" }}
+          />
+        </div>
+      </div>
+      {renderSchemaType(props.schema, "$", getJson, updateJson)}
+    </div>
+  );
 };
 
 export default JSONEditor;
