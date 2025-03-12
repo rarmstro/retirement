@@ -1,11 +1,11 @@
 {
-  "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "Test Schema",
   "type": "object",
   "properties": {
     "name": {
       "type": "string",
-      "title": "Full Name"
+      "title": "Full Name",
+      "default": "John Doe"
     },
     "age": {
       "type": "integer",
@@ -18,7 +18,8 @@
     "role": {
       "type": "string",
       "title": "Role",
-      "enum": ["Admin", "User", "Guest"]
+      "enum": ["Admin", "User", "Guest"],
+      "default": "User"
     },   
     "color": {
       "type": "string",
@@ -44,18 +45,32 @@
     }
   },
   "$defs": {
+    "favorite": {
+      "type": "string",
+      "title": "Favorite"
+    },
+    "theme": {
+      "type": "string",
+      "title": "Theme",
+      "enum": ["Light", "Dark"]
+    },
     "preferences": {
       "type": "object",
       "title": "User Preferences",
       "properties": {
         "theme": {
-          "type": "string",
-          "title": "Theme",
-          "enum": ["Light", "Dark"]
+          "$ref": "#/$defs/theme"
         },
         "notifications": {
           "type": "boolean",
           "title": "Enable Notifications"
+        },
+        "favorites": {
+          "type": "array",
+          "title": "Favorites",
+          "items": {
+            "$ref": "#/$defs/favorite"
+          }
         }
       }
     },

@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { InputGroup, FormGroup, Button, Popover, Menu, MenuItem } from "@blueprintjs/core";
-import { findJSONValue, resolveSchema, existsJSONValue } from "./SchemaUtils";
+import { traverseJsonPath, getDefaultValue, resolveSchema } from "./JSONUtils";
+import SchemaEnum from "./SchemaEnum";
 
 interface SchemaStringProps {
   schema: object;
@@ -15,91 +16,58 @@ const SchemaString: React.FC<SchemaStringProps> = ({
   getJson,
   updateJson,
 }) => {
-
   const json = getJson();
+  const resolve = resolveSchema(schema, path);
+  
+  if (!resolve.exists) {
+    return <div>Invalid path Path= {path}</div>;
+  }
 
-  const resolvedSchema = resolveSchema(schema, path);
+  const resolvedSchema = resolve.value;
+  const traverse = traverseJsonPath(json, path);
+  console.log(path, traverse.value);
 
-  const handleAdd = () => {
-    let initialData = resolvedSchema["default"] || "";
-    if (resolvedSchema["enum"]) {
-      initialData = initialData || resolvedSchema["enum"][0];
-    }
+  let initialData = getDefaultValue(resolvedSchema);
 
-    updateJson(path, initialData);
+  const [data, setData] = useState<string>(initialData);
+
+  const handleValueChange = (value: string) => {
+    setData(value);
+    updateJson(path, value);
   };
 
-  // Return component that is simply the title and a plus button if the JSON at this level is empty
-  if (!existsJSONValue(json, path)) {
+  if (!traverse.exists) {
     return (
-        <Button
-          icon="add"
-          onClick={handleAdd}
-          style={{ margin: "2px" }}
-          className="bp3-intent-success"
-        >{resolvedSchema["title"] || "Add" }</Button>
+      <Button
+        icon="add"
+        onClick={() => updateJson(path, initialData)}
+        style={{ margin: "2px" }}
+        className="bp3-intent-success"
+      >
+        {resolvedSchema.title || "Add"}
+      </Button>
     );
   }
 
-
-  const element = findJSONValue(json, path, "foobar");
-  let initialData = element.object[element.key] || resolvedSchema["default"] || ""
-  if (resolvedSchema["enum"]) {
-    initialData = initialData || resolvedSchema["enum"][0];
-  }
-
-  const [data, setData] = useState(
-    initialData
-  );
-
-  const selectInput = (schema) => {
-    if (schema["enum"]) {
-      return enumInput();
-    } else {
-      return stringInput();
-    }
-  } 
-
-  const enumInput = () => {
+  if (resolvedSchema.enum) {
     return (
-      <Popover
-        content={
-          <Menu>
-            {resolvedSchema["enum"].map((option: string) => (
-              <MenuItem
-                key={option}
-                text={option}
-                onClick={() => { updateJson(path, option);
-                  setData(option); }
-                }
-              />
-            ))}
-          </Menu>
-        }
-        position="bottom"
-      >
-        <Button text={data} />
-      </Popover>    )
-  }
-
-  const stringInput = () => {
-    return (
-      <InputGroup
-      value={data || ""} // Use current data or empty string
-      onChange={(e) => {
-        updateJson(path, e.target.value);
-        setData(e.target.value);
-      }}
-    />
-    )
+      <SchemaEnum
+        schema={resolvedSchema}
+        path={path}
+        value={data}
+        onValueChange={handleValueChange}
+      />
+    );
   }
 
   return (
-    <div>
-      <FormGroup label={resolvedSchema["title"]}>
-        { selectInput(resolvedSchema) }
-      </FormGroup>
-    </div>
+    <FormGroup label={resolvedSchema.title}>
+      <InputGroup
+        value={data || ""}
+        onChange={(e) => handleValueChange(e.target.value)}
+        title={path}
+      />
+    </FormGroup>
   );
 };
 

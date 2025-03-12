@@ -5,7 +5,8 @@
   "role": "Admin",
   "preferences": {
     "theme": "Dark",
-    "notifications": false
+    "notifications": false,
+    "favourites": ["React", "TypeScript"]
   },
   "tags": ["developer", "react", "typescript"],
   "addresses": [
