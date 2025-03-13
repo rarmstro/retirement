@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useRef } from "react";
 import {
   Navbar,
   Alignment,
@@ -8,97 +8,44 @@ import {
   Popover,
   Position,
 } from "@blueprintjs/core";
-import JSONEditor from "./JSONEditor";  
-
-import Ajv from "ajv";
-
-const ajv = new Ajv({ useDefaults: true });
+import JSONEditor from "./JSONEditor";
+import { DataProvider, useData } from "./DataContext"; // Import the DataContext
 
 const App: React.FC = () => {
-  const [schema, setSchema] = useState<any>(null);
-  const [json, setJson] = useState<any>(null);
-  const [filename, setFilename ] = useState<string>("settings.json");
+  return (
+    <DataProvider>
+      <MainApp />
+    </DataProvider>
+  );
+};
 
+const MainApp: React.FC = () => {
+  const { schema, json, loadSchema, loadJson, saveJson } = useData();
   const schemaInputRef = useRef<HTMLInputElement>(null);
   const jsonInputRef = useRef<HTMLInputElement>(null);
 
-  const saveFile = () => {
-    const jsonData = JSON.stringify(json, null, 2); // Format JSON with 2 spaces for readability
-    const blob = new Blob([jsonData], { type: "application/json" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = filename;
-    console.log("Saving file as:", filename);
-    a.click();
-    URL.revokeObjectURL(url);
-  };
-
-  const handleSchemaLoad = (event: React.ChangeEvent<HTMLInputElement>) => {
-    console.log("File selected:", event.target.files); // Add this to debug
-    const file = event.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = () => {
-        try {
-          const schema = JSON.parse(reader.result as string);
-
-          // Validate the schema using AJV
-          ajv.compile(schema);
-          console.log("Schema is valid:");
-          setSchema(schema);
-          setJson(null);
-        } catch (error) {
-          console.error("Error parsing schema:", error);
-        }
-      };
-      reader.readAsText(file);
-    }
-  };
-
   const triggerSchemaLoad = () => {
-    if (schemaInputRef && schemaInputRef.current) {
+    if (schemaInputRef.current) {
       schemaInputRef.current.click();
       schemaInputRef.current.value = "";
     }
   };
 
-  const handleJsonLoad = (event: React.ChangeEvent<HTMLInputElement>) => {
-    console.log("File selected:", event.target.files); // Add this to debug
-    const file = event.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = () => {
-        try {
-          const validate = ajv.compile(schema);
-
-          const content = reader.result as string;
-          const jsonData = JSON.parse(content);
-          // Validate the JSON data using the schema
-          const valid = validate(jsonData);
-
-          if (valid) {
-            console.log("JSON data is valid");
-            setJson(jsonData);
-            setFilename(file.name);
-            console.log(file.name);
-            console.log(jsonData);
-          } else {
-            console.error("Invalid JSON data:", validate?.errors);
-          }
-        } catch (error) {
-          console.error("Error parsing JSON:", error);
-        }
-      };
-      reader.readAsText(file);
-    }
-  };
-
   const triggerJsonLoad = () => {
-    if (jsonInputRef && jsonInputRef.current) {
+    if (jsonInputRef.current) {
       jsonInputRef.current.click();
       jsonInputRef.current.value = "";
     }
+  };
+
+  const handleSchemaLoad = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) loadSchema(file);
+  };
+
+  const handleJsonLoad = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) loadJson(file);
   };
 
   const menu = (
@@ -114,7 +61,7 @@ const App: React.FC = () => {
         icon="floppy-disk"
         text="Save Settings"
         disabled={!schema || !json}
-        onClick={saveFile}
+        onClick={saveJson}
       />
     </Menu>
   );
@@ -145,7 +92,7 @@ const App: React.FC = () => {
         </Navbar.Group>
       </Navbar>
 
-      <JSONEditor json={json} schema={schema} />  
+      <JSONEditor />
     </div>
   );
 };
