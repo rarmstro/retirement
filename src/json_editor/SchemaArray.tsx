@@ -70,7 +70,7 @@ const SchemaArray: React.FC<SchemaArrayProps> = ({
         return (
           <div key={index} style={{ marginBottom: "10px" }}>
             <Card className="schema-array-item" style={{ padding: "10px", marginBottom: "5px" }}>
-              {renderSchemaType(itemSchema, itemPath, getJson, updateJson)}
+              {renderSchemaType(itemSchema, itemPath, getJson, updateJson, false, false)}
               <Button
                 icon="trash"
                 onClick={() => handleRemove(index)}

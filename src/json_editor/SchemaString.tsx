@@ -25,11 +25,11 @@ const SchemaString: React.FC<SchemaStringProps> = ({
 
   const resolvedSchema = resolve.value;
   const traverse = traverseJsonPath(json, path);
-  console.log(path, traverse.value);
+  //console.log(path, traverse.value);
 
   let initialData = getDefaultValue(resolvedSchema);
 
-  const [data, setData] = useState<string>(initialData);
+  const [data, setData] = useState<string>(traverse.value || initialData);
 
   const handleValueChange = (value: string) => {
     setData(value);
@@ -54,8 +54,8 @@ const SchemaString: React.FC<SchemaStringProps> = ({
       <SchemaEnum
         schema={resolvedSchema}
         path={path}
-        value={data}
-        onValueChange={handleValueChange}
+        getJson={getJson}
+        updateJson={updateJson}
       />
     );
   }

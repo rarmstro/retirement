@@ -75,7 +75,9 @@ export const renderSchemaType = (
   schema: Record<string, any>,
   path: string,
   getJson: () => Record<string, any>,
-  updateJson: (path: string, value: any) => void
+  updateJson: (path: string, value: any) => void, 
+  useCollapse: boolean = true,
+  open: boolean = false,
 ) => {
   // Split the path into an array of keys
   const resolvedSchema = resolveSchema(schema, path);
@@ -89,6 +91,8 @@ export const renderSchemaType = (
           path={path}
           getJson={getJson}
           updateJson={updateJson}
+          useCollapse={useCollapse}
+          open={open}
         />
       );
     case "string":

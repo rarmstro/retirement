@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Button, FormGroup, InputGroup } from "@blueprintjs/core";
-import { existsJSONValue, findJSONValue, resolveSchema } from "./SchemaUtils";
+import { traverseJsonPath, getDefaultValue, resolveSchema } from "./JSONUtils";
 
 interface SchemaNumberProps {
   schema: object;
@@ -16,48 +16,52 @@ const SchemaNumber: React.FC<SchemaNumberProps> = ({
   updateJson,
 }) => {
   const json = getJson();
+  const resolve = resolveSchema(schema, path);
 
-  const resolvedSchema = resolveSchema(schema, path);
-  const element = findJSONValue(json, path, false);
+  if (!resolve.exists) {
+    return <div>Invalid path Path= {path}</div>;
+  }
 
-  const handleAdd = () => {
-    let initialData = resolvedSchema["default"] || "0";
-    if (resolvedSchema["enum"]) {
-      initialData = initialData || resolvedSchema["enum"][0];
-    }
+  const resolvedSchema = resolve.value;
+  const traverse = traverseJsonPath(json, path);
 
-    updateJson(path, initialData);
+  let initialData = getDefaultValue(resolvedSchema) || 0;
+  if (resolvedSchema.enum) {
+    initialData = initialData || resolvedSchema.enum[0];
+  }
+
+  const [data, setData] = useState<number>(
+    traverse.value !== undefined ? Number(traverse.value) : initialData
+  );
+
+  const handleValueChange = (value: number) => {
+    setData(value);
+    updateJson(path, value);
   };
 
-  // Return component that is simply the title and a plus button if the JSON at this level is empty
-  if (!existsJSONValue(json, path)) {
+  if (!traverse.exists) {
     return (
-        <Button
-          icon="add"
-          onClick={handleAdd}
-          style={{ margin: "2px" }}
-          className="bp3-intent-success"
-        >{resolvedSchema["title"] || "Add" }</Button>
+      <Button
+        icon="add"
+        onClick={() => updateJson(path, initialData)}
+        style={{ margin: "2px" }}
+        className="bp3-intent-success"
+      >
+        {resolvedSchema.title || "Add"}
+      </Button>
     );
   }
 
-  const [data, setData] = useState(
-    "0"
-  );
-
-
   return (
     <div>
-    <FormGroup label={schema["title"]} labelFor={path}>
-      <InputGroup
-        type="number"
-        value={data.toString()}
-        onChange={(e) => {
-          updateJson(path, e.target.value);
-          setData(e.target.value);
-        }}
-      />
-    </FormGroup>
+      <FormGroup label={resolvedSchema.title} labelFor={path}>
+        <InputGroup
+          type="number"
+          value={data.toString()}
+          onChange={(e) => handleValueChange(Number(e.target.value))}
+          title={path}
+        />
+      </FormGroup>
     </div>
   );
 };

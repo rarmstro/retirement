@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import { FormGroup, Checkbox } from "@blueprintjs/core";
-import { findJSONValue, resolveSchema } from "./SchemaUtils";
+import { FormGroup, Checkbox, Button } from "@blueprintjs/core";
+import { traverseJsonPath, getDefaultValue, resolveSchema } from "./JSONUtils";
 
 interface SchemaBooleanProps {
   schema: object;
@@ -16,24 +16,47 @@ const SchemaBoolean: React.FC<SchemaBooleanProps> = ({
   updateJson,
 }) => {
   const json = getJson();
+  const resolve = resolveSchema(schema, path);
 
-  const resolvedSchema = resolveSchema(schema, path);
-  const element = findJSONValue(json, path, false);
-  const [isChecked, setChecked] = useState(
-    element.object[element.key] || false
+  if (!resolve.exists) {
+    return <div>Invalid path Path= {path}</div>;
+  }
+
+  const resolvedSchema = resolve.value;
+  const traverse = traverseJsonPath(json, path);
+
+  let initialData = getDefaultValue(resolvedSchema) || false;
+
+  const [isChecked, setChecked] = useState<boolean>(
+    traverse.exists ? traverse.value : initialData
   );
+
+  const handleValueChange = (checked: boolean) => {
+    setChecked(checked);
+    updateJson(path, checked);
+  };
+
+  if (!traverse.exists) {
+    return (
+      <Button
+        icon="add"
+        onClick={() => updateJson(path, initialData)}
+        style={{ margin: "2px" }}
+        className="bp3-intent-success"
+      >
+        {resolvedSchema.title || "Add"}
+      </Button>
+    );
+  }
 
   return (
     <div>
       <FormGroup labelFor={path}>
         <Checkbox
           checked={isChecked}
-          onChange={(e) => {
-            updateJson(path, e.target.checked);
-            setChecked(e.target.checked);
-          }}
+          onChange={(e) => handleValueChange(e.target.checked)}
         >
-          {resolvedSchema["title"]}
+          {resolvedSchema.title}
         </Checkbox>
       </FormGroup>
     </div>
