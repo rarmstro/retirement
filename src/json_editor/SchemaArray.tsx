@@ -17,27 +17,28 @@ const SchemaArray: React.FC<SchemaArrayProps> = ({
   updateJson,
 }) => {
   const resolvedSchema = resolveSchema(schema, path);
-  let itemSchema = resolvedSchema.items; 
+  let itemSchema = resolvedSchema.items;
   // Check if there is a $ref at the current level of the schema
   if (itemSchema["$ref"]) {
     //console.log("Resolving $ref");
     itemSchema = resolveRef(itemSchema["$ref"], schema);
   }
   //console.log("itemsSchema = ", itemSchema);
-  
+
   const json = getJson();
   //console.log("SchemaArray : path = ", path);
   const element = findJSONValue(json, path, []);
   //console.log(element);
 
   const initialData = element?.object?.[element.key] || [];
-  
+
   const [data, setData] = useState(initialData);
 
   // Add useEffect to sync state with external changes
   useEffect(() => {
-    setData(element?.object?.[element.key] || []);
-  }, [json, path]);
+    const currentElement = findJSONValue(getJson(), path, []);
+    setData(currentElement?.object?.[currentElement.key] || []);
+  }, [getJson, path]);
 
   const handleAdd = () => {
     const newValue = itemSchema?.default ?? {};
@@ -55,7 +56,10 @@ const SchemaArray: React.FC<SchemaArrayProps> = ({
   };
 
   return (
-    <Card className="schema-array-card" style={{ padding: "15px", marginBottom: "20px" }}>
+    <Card
+      className="schema-array-card"
+      style={{ padding: "15px", marginBottom: "20px" }}
+    >
       <Button
         icon="add"
         onClick={handleAdd}
@@ -68,9 +72,22 @@ const SchemaArray: React.FC<SchemaArrayProps> = ({
         const itemPath = `${path}[${index}]`;
         //console.log(itemPath);
         return (
-          <div key={index} style={{ marginBottom: "10px" }}>
-            <Card className="schema-array-item" style={{ padding: "10px", marginBottom: "5px" }}>
-              {renderSchemaType(itemSchema, itemPath, getJson, updateJson, false, false)}
+          <div
+            key={`${path}-item-${index}-${data.length}`}
+            style={{ marginBottom: "10px" }}
+          >
+            <Card
+              className="schema-array-item"
+              style={{ padding: "10px", marginBottom: "5px" }}
+            >
+              {renderSchemaType(
+                itemSchema,
+                itemPath,
+                getJson,
+                updateJson,
+                false,
+                false
+              )}
               <Button
                 icon="trash"
                 onClick={() => handleRemove(index)}
