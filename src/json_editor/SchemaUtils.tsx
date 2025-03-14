@@ -20,53 +20,68 @@ export const resolveRef = (ref: string, schema: Record<string, any>) => {
 
 // Function to find the schema object based on the JSON path provided
 export const resolveSchema = (schema: Record<string, any>, path: string) => {
-  //console.log("Path = ", path, schema);
   let currentSchema = schema;
 
   // Split the path into an array of keys
   const pathKeys = path.split(".");
 
-  let key = pathKeys[0];
+  // Skip the root element (usually 'root')
+  pathKeys.shift();
 
-  while (pathKeys.length > 1) {
-    //console.log("Current key = ", key);
+  // Process each path segment
+  for (let i = 0; i < pathKeys.length; i++) {
+    const pathKey = pathKeys[i];
 
-    //console.log(pathKeys);
-
-    // Extract everything before the first "[" character, or the entire string if there is no "["
-    key = pathKeys[1].split("[")[0];
-
-    //console.log("Child key = ", key);
-
-    while (currentSchema["type"] === "array" && currentSchema["items"]) {
-      console.log("Handling array type");
-      currentSchema = currentSchema["items"];
-
-      // Check if there is a $ref at the current level of the schema
-      if (currentSchema["$ref"]) {
-        //console.log("Resolving $ref");
-        currentSchema = resolveRef(currentSchema["$ref"], schema);
-      }
-    }
-
-    if (
-      currentSchema["type"] === "object" &&
-      currentSchema["properties"] &&
-      currentSchema["properties"][key]
-    ) {
-      currentSchema = currentSchema["properties"][key];
-      //console.log("Handling object type");
-    }
-
-    // Check if there is a $ref at the current level of the schema
-    while (currentSchema["$ref"]) {
-      //console.log("Resolving $ref");
+    // Resolve any $ref before proceeding
+    while (currentSchema && currentSchema["$ref"]) {
       currentSchema = resolveRef(currentSchema["$ref"], schema);
     }
 
-    pathKeys.shift();
+    // Check if this path part contains an array index
+    if (pathKey.includes("[")) {
+      // Extract key name and array index
+      const key = pathKey.split("[")[0];
+
+      // Handle the property before the array index
+      if (
+        currentSchema["type"] === "object" &&
+        currentSchema["properties"] &&
+        currentSchema["properties"][key]
+      ) {
+        currentSchema = currentSchema["properties"][key];
+      }
+
+      // Resolve any $ref that might be in the array property
+      while (currentSchema && currentSchema["$ref"]) {
+        currentSchema = resolveRef(currentSchema["$ref"], schema);
+      }
+
+      // Now that we have the array schema, get the items schema
+      if (currentSchema["type"] === "array" && currentSchema["items"]) {
+        currentSchema = currentSchema["items"];
+
+        // Resolve any $ref in the items schema
+        while (currentSchema && currentSchema["$ref"]) {
+          currentSchema = resolveRef(currentSchema["$ref"], schema);
+        }
+      }
+    } else {
+      // Regular object property
+      if (
+        currentSchema["type"] === "object" &&
+        currentSchema["properties"] &&
+        currentSchema["properties"][pathKey]
+      ) {
+        currentSchema = currentSchema["properties"][pathKey];
+      }
+
+      // Resolve any $ref after navigating to the property
+      while (currentSchema && currentSchema["$ref"]) {
+        currentSchema = resolveRef(currentSchema["$ref"], schema);
+      }
+    }
   }
-  //console.log(currentSchema);
+
   return currentSchema;
 };
 
@@ -75,9 +90,9 @@ export const renderSchemaType = (
   schema: Record<string, any>,
   path: string,
   getJson: () => Record<string, any>,
-  updateJson: (path: string, value: any) => void, 
+  updateJson: (path: string, value: any) => void,
   useCollapse: boolean = true,
-  open: boolean = false,
+  open: boolean = false
 ) => {
   // Split the path into an array of keys
   const resolvedSchema = resolveSchema(schema, path);
@@ -107,11 +122,11 @@ export const renderSchemaType = (
     case "array":
       return (
         <SchemaArray
-        schema={schema}
-        path={path}
-        getJson={getJson}
-        updateJson={updateJson}
-      />
+          schema={schema}
+          path={path}
+          getJson={getJson}
+          updateJson={updateJson}
+        />
       );
     case "boolean":
       return (
@@ -122,23 +137,27 @@ export const renderSchemaType = (
           updateJson={updateJson}
         />
       );
-      case "number":
-      case "integer":
-        return (
-          <SchemaNumber
-            schema={schema}
-            path={path}
-            getJson={getJson}
-            updateJson={updateJson}
-          />
-        );
+    case "number":
+    case "integer":
+      return (
+        <SchemaNumber
+          schema={schema}
+          path={path}
+          getJson={getJson}
+          updateJson={updateJson}
+        />
+      );
     default:
       return <div>Path= {path}</div>;
   }
 };
 
 // Find value in JSON object based on path
-export const findJSONValue = (json: Record<string, any>, path: string, initialValue?: any) => {
+export const findJSONValue = (
+  json: Record<string, any>,
+  path: string,
+  initialValue?: any
+) => {
   // Navigate through the object using the path
   const keys = path.split(".");
   let temp: any = json;
@@ -176,13 +195,15 @@ export const findJSONValue = (json: Record<string, any>, path: string, initialVa
 
   if (keys[keys.length - 1].includes("[")) {
     const key = keys[keys.length - 1].split("[")[0];
-    const index = parseInt(keys[keys.length - 1].split("[")[1].replace("]", ""));
-    console.log(temp, key, temp[key][index])
+    const index = parseInt(
+      keys[keys.length - 1].split("[")[1].replace("]", "")
+    );
+    console.log(temp, key, temp[key][index]);
     return {
       object: temp[key],
       key: index,
-      value: temp[key][index]
-    }
+      value: temp[key][index],
+    };
   }
 
   return {
@@ -230,4 +251,4 @@ export const existsJSONValue = (json: Record<string, any>, path: string) => {
 
   //console.log("Found!")
   return true;
-}
+};

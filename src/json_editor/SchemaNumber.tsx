@@ -25,7 +25,7 @@ const SchemaNumber: React.FC<SchemaNumberProps> = ({
   const resolvedSchema = resolve.value;
   const traverse = traverseJsonPath(json, path);
 
-  let initialData = getDefaultValue(resolvedSchema) || 0;
+  let initialData = getDefaultValue(schema, resolvedSchema) || 0;
   if (resolvedSchema.enum) {
     initialData = initialData || resolvedSchema.enum[0];
   }

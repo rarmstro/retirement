@@ -27,7 +27,7 @@ const SchemaString: React.FC<SchemaStringProps> = ({
   const traverse = traverseJsonPath(json, path);
   //console.log(path, traverse.value);
 
-  let initialData = getDefaultValue(resolvedSchema);
+  let initialData = getDefaultValue(schema, resolvedSchema);
 
   const [data, setData] = useState<string>(traverse.value || initialData);
 
@@ -40,11 +40,13 @@ const SchemaString: React.FC<SchemaStringProps> = ({
     return (
       <Button
         icon="add"
-        onClick={() => updateJson(path, initialData)}
+        onClick={() => handleValueChange(initialData)}
         style={{ margin: "2px" }}
         className="bp3-intent-success"
       >
-        {resolvedSchema.title || "Add"}
+        Add {(resolvedSchema.title || path.split('.').pop() || "Add")
+          .replace(/([A-Z])/g, ' $1')
+          .replace(/^\w/, c => c.toUpperCase())}
       </Button>
     );
   }

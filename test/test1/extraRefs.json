@@ -20,10 +20,11 @@
       "title": "Role",
       "enum": ["Admin", "User", "Guest"],
       "default": "User"
-    },
-    "favouriteColor": {
+    },   
+    "color": {
       "type": "string",
-      "enum": ["Red", "Green", "Blue"]
+      "enum": ["Red", "Green", "Blue"],
+      "title": "Favorite Color"
     },
     "preferences": {
       "$ref": "#/$defs/preferences"
@@ -32,9 +33,7 @@
       "type": "array",
       "title": "Tags",
       "items": {
-        "type": "string",
-        "title": "Tag",
-        "default": "Place Tag Here"
+        "type": "string"
       }
     },
     "addresses": {
@@ -49,6 +48,23 @@
     "favorite": {
       "type": "string",
       "title": "Favorite"
+    },
+    "attachments": {
+      "type": "array",
+      "title": "Attachments",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "size": {
+            "type": "integer",
+            "title": "Size"
+          }
+        }
+      }
     },
     "theme": {
       "type": "string",
@@ -89,8 +105,10 @@
         },
         "postalCode": {
           "type": "string",
-          "title": "Postal Code",
-          "default": "X0X 0X0"
+          "title": "Postal Code"
+        },
+        "attachments": {
+          "$ref": "#/$defs/attachments"
         }
       }
     }

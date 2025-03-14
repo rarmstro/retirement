@@ -25,7 +25,7 @@ const SchemaBoolean: React.FC<SchemaBooleanProps> = ({
   const resolvedSchema = resolve.value;
   const traverse = traverseJsonPath(json, path);
 
-  let initialData = getDefaultValue(resolvedSchema) || false;
+  let initialData = getDefaultValue(schema, resolvedSchema) || false;
 
   const [isChecked, setChecked] = useState<boolean>(
     traverse.exists ? traverse.value : initialData

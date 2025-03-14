@@ -25,7 +25,7 @@ const SchemaEnum: React.FC<SchemaEnumProps> = ({
   const resolvedSchema = resolve.value;
   const traverse = traverseJsonPath(json, path);
 
-  let initialData = getDefaultValue(resolvedSchema);
+  let initialData = getDefaultValue(schema, resolvedSchema);
 
   const [data, setData] = useState<string>(traverse.value || initialData);
 

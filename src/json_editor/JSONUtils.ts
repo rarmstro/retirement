@@ -131,22 +131,22 @@ export function resolveSchema(schema: Record<string, any>, path: string): PathRe
 }
 
 // Get default value from schema
-export function getDefaultValue(schema: Record<string, any>): any {
-  // Resolve $ref if present
-  if (schema.$ref) {
-    schema = resolveRef(schema, schema.$ref);
-  }
-  
+export function getDefaultValue(rootSchema: Record<string, any>, currentSchema: Record<string, any>): any {
+  // Resolve current schema
+  if (currentSchema.$ref) {
+    currentSchema = resolveRef(rootSchema, currentSchema.$ref);
+  } 
+
   // First check explicit default or enum values
-  if (schema.default !== undefined) {
-    return schema.default;
+  if (currentSchema.default !== undefined) {
+    return currentSchema.default;
   }
-  if (schema.enum && schema.enum.length > 0) {
-    return schema.enum[0];
+  if (currentSchema.enum && currentSchema.enum.length > 0) {
+    return currentSchema.enum[0];
   }
 
   // Handle different types with proper return statements
-  switch (schema.type) {
+  switch (currentSchema.type) {
     case "string":
       return "";
     case "number":
@@ -155,17 +155,19 @@ export function getDefaultValue(schema: Record<string, any>): any {
     case "boolean":
       return false;
     case "object":
-      if (schema.properties) {
+      if (currentSchema.properties) {
         const result: Record<string, any> = {};
-        for (const [key, prop] of Object.entries(schema.properties)) {
-          result[key] = getDefaultValue(prop as Record<string, any>);
+        for (const [key, prop] of Object.entries(currentSchema.properties)) {
+          result[key] = getDefaultValue(rootSchema, prop as Record<string, any>);
         }
         return result;
       }
       return {};
     case "array":
-      if (schema.items && schema.minItems > 0) {
-        return [getDefaultValue(schema.items)];
+      //console.log("SchemaUtils: getDefaultValue - array");
+      if (currentSchema.items) {
+        //console.log("SchemaUtils: getDefaultValue - array with minItems > 0");
+        return [getDefaultValue(rootSchema, currentSchema.items)];
       }
       return [];
     default:
