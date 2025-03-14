@@ -125,7 +125,7 @@ const SchemaArray: React.FC<SchemaArrayProps> = ({
           item
         );
         return (
-          <div key={`${path}-item-${index}`} style={{ margin: "1px", border: "3px solidrgb(44, 115, 207)" }}>
+          <div  key={`${path}-item-${index}-${data.length}`} style={{ margin: "1px", border: "3px solidrgb(44, 115, 207)" }}>
             <Card
               className="schema-array-item"
               style={{ padding: "1px", margin: "1px", border: "3px solidrgb(44, 115, 207)" }}
